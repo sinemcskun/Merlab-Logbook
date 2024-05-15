@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://kit.fontawesome.com/ea22965240.js" crossorigin="anonymous"></script>
+    <title>MERLAB Digital Logbook</title>
+</head>
+
+<body>
+
+    <header>
+        <h1>MERLAB Digital Logbook</h1>
+        <!-- panel için indirme butonu -->
+        <a href="#" class="icon-container" onclick ="indir()">
+            <i class="fa-solid fa-file-arrow-down fa-2x"></i>
+        </a>
+        <!-- buton sonu -->
+    </header>
+
+    <main>
+        <div class="table-container">
+            <table id = "veriTablosu">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Kullanıcı İsim Soyisim</th>
+                        <th>Kullanıcı Türü</th>
+                        <th>Kullanıcı Kimliği</th>
+                        <th>Fakülte</th>
+                        <th>Laboratuvar</th>
+                        <th>Makine İsmi</th>
+                        <th>Deney Başlangıç Zamanı</th>
+                        <th>Deney Bitiş Zamanı</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in result %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ row[1] }}</td>
+                            <td>{{ row[2] }}</td>
+                            <td>{{ row[3] }}</td>
+                            <td>{{ row[4] }}</td>
+                            <td>{{ row[5] }}</td>
+                            <td>{{ row[6] }}</td>
+                            <td>{{ row[7] }}</td>
+                            <td>{{ row[8] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2023 MERLAB</p>
+    </footer>
+
+    <script>
+        function indir() {
+            const table = document.getElementById('veriTablosu');
+            const rows = Array.from(table.getElementsByTagName('tr'));
+
+            // Header satırını atla
+            rows.shift();
+
+            // Verileri içeren bir dize oluştur
+            const data = rows.map(row => {
+                const columns = Array.from(row.getElementsByTagName('td'));
+                return columns.map(column => column.textContent).join('\t');
+            }).join('\n');
+
+            const blob = new Blob([data], { type: "text/plain;charset=utf-8" });
+
+            // Dosya adı ve uzantısını ayarlayın
+            const filename = prompt("Enter the filename to save the data:");
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = filename + ".txt";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    </script>
+
+</body>
+
+</html>
